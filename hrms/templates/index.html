@@ -1,0 +1,943 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart HR - Intelligent HRMS Portal</title>
+    <meta name="description" content="Intelligent Human Resource Management System with real-time analytics, automated workflows, and data-driven payroll.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Custom Style -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <!-- Login Landing Page Overlay -->
+    <div class="login-overlay active" id="login-overlay-page">
+        <div class="login-box">
+            <div class="login-brand">
+                <div class="brand-logo">
+                    <span class="pulse-ring"></span>
+                    <i data-lucide="shield-check"></i>
+                </div>
+                <h2>Smart HR</h2>
+            </div>
+            <h3>Intelligent Portal Log In</h3>
+            <p class="login-desc">Enter your organization email and password to access the portal.</p>
+            
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="login-email-input">Work Email</label>
+                    <input type="email" id="login-email-input" class="form-control" placeholder="Enter your work email" required>
+                </div>
+                <div class="form-group">
+                    <label for="login-password-input">Security Password</label>
+                    <input type="password" id="login-password-input" class="form-control" placeholder="Enter your security password" required>
+                </div>
+                <button type="submit" class="btn btn-primary btn-full-width" style="margin-top:10px;">
+                    <i data-lucide="log-in"></i> Access Portal
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <div class="brand-logo">
+                    <span class="pulse-ring"></span>
+                    <i data-lucide="shield-check"></i>
+                </div>
+                <h2>Smart HRMS</h2>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <ul>
+                    <li class="nav-item active" data-page="dashboard" id="nav-dashboard">
+                        <a href="javascript:void(0)">
+                            <i data-lucide="layout-dashboard"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="nav-item hidden" data-page="profile" id="nav-profile">
+                        <a href="javascript:void(0)">
+                            <i data-lucide="user"></i>
+                            <span>My Profile</span>
+                        </a>
+                    </li>
+                    <li class="nav-item" data-page="employees" id="nav-employees">
+                        <a href="javascript:void(0)">
+                            <i data-lucide="users"></i>
+                            <span>Employees</span>
+                        </a>
+                    </li>
+                    <li class="nav-item" data-page="leave" id="nav-leave">
+                        <a href="javascript:void(0)">
+                            <i data-lucide="calendar-days"></i>
+                            <span>Leave Manager</span>
+                        </a>
+                    </li>
+                    <li class="nav-item" data-page="attendance" id="nav-attendance">
+                        <a href="javascript:void(0)">
+                            <i data-lucide="clock"></i>
+                            <span>Attendance</span>
+                        </a>
+                    </li>
+                    <li class="nav-item" data-page="payroll" id="nav-payroll">
+                        <a href="javascript:void(0)">
+                            <i data-lucide="wallet"></i>
+                            <span>Payroll Portal</span>
+                        </a>
+                    </li>
+                    <li class="nav-item" data-page="careers" id="nav-careers">
+                        <a href="javascript:void(0)">
+                            <i data-lucide="briefcase"></i>
+                            <span>Careers Manager</span>
+                        </a>
+                    </li>
+                    <li class="nav-item" data-page="settings" id="nav-settings">
+                        <a href="javascript:void(0)">
+                            <i data-lucide="settings"></i>
+                            <span>Settings</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="sidebar-user">
+                    <div class="avatar" id="current-user-avatar">AD</div>
+                    <div class="user-info">
+                        <span class="user-name">HR Administrator</span>
+                        <span class="user-role">Super Admin</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-layout">
+            <!-- Header -->
+            <header class="main-header">
+                <div class="header-left">
+                    <button class="mobile-toggle" id="mobile-sidebar-toggle">
+                        <i data-lucide="menu"></i>
+                    </button>
+                    <div class="page-title">
+                        <h1 id="header-title">Dashboard</h1>
+                        <p id="header-subtitle">Welcome back, here's your organization overview.</p>
+                    </div>
+                </div>
+
+                <div class="header-right">
+                    <!-- Global Search -->
+                    <div class="search-bar">
+                        <i data-lucide="search"></i>
+                        <input type="text" id="global-search" placeholder="Search employees, roles, tasks...">
+                    </div>
+
+                    <!-- Theme Toggle -->
+                    <button class="icon-btn theme-toggle-btn" id="theme-toggle-btn" title="Toggle Theme">
+                        <i data-lucide="sun" class="sun-icon"></i>
+                        <i data-lucide="moon" class="moon-icon"></i>
+                    </button>
+
+                    <!-- Notifications -->
+                    <div class="dropdown-wrapper">
+                        <button class="icon-btn" id="notification-btn" title="Notifications">
+                            <i data-lucide="bell"></i>
+                            <span class="badge notification-badge">2</span>
+                        </button>
+                        <div class="dropdown-menu notification-menu" id="notification-dropdown">
+                            <div class="dropdown-header">
+                                <h3>Notifications</h3>
+                                <a href="#" id="clear-notifications">Mark all read</a>
+                            </div>
+                            <div class="dropdown-content">
+                                <div class="notification-item unread">
+                                    <div class="notif-icon att"><i data-lucide="clock"></i></div>
+                                    <div class="notif-body">
+                                        <p>3 employees clocked in late today.</p>
+                                        <span>5 mins ago</span>
+                                    </div>
+                                </div>
+                                <div class="notification-item unread">
+                                    <div class="notif-icon leave"><i data-lucide="calendar"></i></div>
+                                    <div class="notif-body">
+                                        <p>New leave request from <strong>Sarah Connor</strong>.</p>
+                                        <span>2 hours ago</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- User Menu -->
+                    <div class="dropdown-wrapper">
+                        <button class="profile-menu-btn" id="user-menu-btn">
+                            <div class="avatar-small">AD</div>
+                        </button>
+                        <div class="dropdown-menu user-dropdown" id="user-dropdown">
+                            <ul>
+                                <li><a href="#"><i data-lucide="user"></i> My Profile</a></li>
+                                <li><a href="javascript:void(0)" onclick="openPage('settings')"><i data-lucide="settings"></i> Settings</a></li>
+                                <li class="divider"></li>
+                                <li><a href="javascript:void(0)" id="btn-logout"><i data-lucide="log-out"></i> Logout</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Notifications Toast Container -->
+            <div id="toast-container"></div>
+
+            <!-- Pages -->
+            <div class="content-container">
+                
+                <!-- 1. DASHBOARD PAGE -->
+                <section class="app-page active" id="dashboard-page">
+                    <!-- KPI Cards Grid -->
+                    <div class="kpi-grid">
+                        <div class="kpi-card purple-glow">
+                            <div class="kpi-icon"><i data-lucide="users-2"></i></div>
+                            <div class="kpi-info">
+                                <span class="kpi-label">Total Employees</span>
+                                <h3 class="kpi-value" id="kpi-total-employees">--</h3>
+                            </div>
+                        </div>
+                        <div class="kpi-card blue-glow">
+                            <div class="kpi-icon"><i data-lucide="check-circle-2"></i></div>
+                            <div class="kpi-info">
+                                <span class="kpi-label">Today's Attendance</span>
+                                <h3 class="kpi-value" id="kpi-attendance-today">--</h3>
+                            </div>
+                        </div>
+                        <div class="kpi-card orange-glow">
+                            <div class="kpi-icon"><i data-lucide="calendar-clock"></i></div>
+                            <div class="kpi-info">
+                                <span class="kpi-label">On Leave Today</span>
+                                <h3 class="kpi-value" id="kpi-leaves-today">--</h3>
+                                <span class="kpi-trend neutral" id="kpi-pending-leaves-desc">-- pending requests</span>
+                            </div>
+                        </div>
+                        <div class="kpi-card green-glow">
+                            <div class="kpi-icon"><i data-lucide="briefcase"></i></div>
+                            <div class="kpi-info">
+                                <span class="kpi-label">Open Careers</span>
+                                <h3 class="kpi-value" id="kpi-careers-open">--</h3>
+                                <span class="kpi-trend positive"><i data-lucide="arrow-up-right"></i> Active recruiting</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Dashboard Main Section -->
+                    <div class="dashboard-body">
+                        <!-- Chart Column -->
+                        <div class="charts-column">
+                            <div class="dashboard-card chart-card">
+                                <div class="card-header">
+                                    <h3>Live Clock-In & Tap Logs</h3>
+                                    <span class="header-action text-muted">Recent Logs</span>
+                                </div>
+                                <div class="card-body scroll-table-container">
+                                    <table class="data-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Employee</th>
+                                                <th>Date</th>
+                                                <th>Tap In</th>
+                                                <th>Tap Out</th>
+                                                <th>Hours</th>
+                                                <th>Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="dashboard-attendance-table-body">
+                                            <!-- Injected dynamically -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div class="chart-flex-row" id="dashboard-department-chart-wrapper">
+                                <div class="dashboard-card compact-card">
+                                    <div class="card-header">
+                                        <h3>Department Distribution</h3>
+                                    </div>
+                                    <div class="card-body donut-chart-container">
+                                        <svg width="180" height="180" viewBox="0 0 36 36" class="donut-chart" id="dept-donut-chart">
+                                            <circle cx="18" cy="18" r="15.915" fill="none" stroke="var(--border-color)" stroke-width="2.5"></circle>
+                                            <!-- Donut segments injected here -->
+                                            <g id="donut-segments"></g>
+                                        </svg>
+                                        <div class="donut-legend" id="donut-legend">
+                                            <!-- Injected Legend -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Sidebar column -->
+                        <div class="dashboard-sidebar-column">
+                            <!-- Quick Clock in/out widget -->
+                            <div class="dashboard-card clock-widget purple-glow">
+                                <div class="widget-header">
+                                    <i data-lucide="clock"></i>
+                                    <span>Attendance Tracker</span>
+                                </div>
+                                <div class="widget-body">
+                                    <div class="time-display" id="widget-current-time">00:00:00</div>
+                                    <div class="date-display" id="widget-current-date">Loading date...</div>
+                                    
+                                    <div class="employee-select-wrapper">
+                                        <label for="clock-employee-select">Simulate Employee:</label>
+                                        <select id="clock-employee-select" class="form-select">
+                                            <option value="">-- Choose Employee --</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="clock-status-banner offline" id="clock-status-banner">
+                                        <span class="indicator"></span>
+                                        <span class="text" id="clock-status-text">Not Clocked In Today</span>
+                                    </div>
+
+                                    <div class="elapsed-timer hidden" id="elapsed-timer">
+                                        Duration: <strong id="elapsed-time-val">00h 00m</strong>
+                                    </div>
+
+                                    <div class="clock-buttons">
+                                        <button class="btn btn-primary btn-full-width" id="btn-clock-in">
+                                            <i data-lucide="log-in"></i> Tap In
+                                        </button>
+                                        <button class="btn btn-danger btn-full-width hidden" id="btn-clock-out">
+                                            <i data-lucide="log-out"></i> Tap Out
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Recent activities -->
+                            <div class="dashboard-card flex-grow">
+                                <div class="card-header">
+                                    <h3>System Logs & Activity</h3>
+                                </div>
+                                <div class="card-body">
+                                    <ul class="activity-feed" id="activity-feed-list">
+                                        <!-- Activities injected here -->
+                                        <li class="loading-state">Loading activities...</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 1.5 MY PROFILE PAGE -->
+                <section class="app-page" id="profile-page">
+                    <div class="dashboard-card max-width-card">
+                        <div class="card-header">
+                            <h3>My Professional Profile</h3>
+                        </div>
+                        <div class="card-body" id="my-profile-page-content">
+                            <!-- Filled dynamically by JavaScript -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 2. EMPLOYEES PAGE -->
+                <section class="app-page" id="employees-page">
+                    <!-- Actions Header -->
+                    <div class="page-actions-bar">
+                        <div class="filters-left">
+                            <div class="search-bar search-inner">
+                                <i data-lucide="search"></i>
+                                <input type="text" id="employee-search-input" placeholder="Search name, code, email...">
+                            </div>
+                            <select id="employee-dept-filter" class="form-select">
+                                <option value="">All Departments</option>
+                                <!-- Injected dynamically -->
+                            </select>
+                            <select id="employee-status-filter" class="form-select">
+                                <option value="">All Statuses</option>
+                                <option value="Active">Active</option>
+                                <option value="Remote">Remote</option>
+                                <option value="On Leave">On Leave</option>
+                                <option value="Inactive">Inactive</option>
+                                <option value="Remove Employee">Remove Employee</option>
+                            </select>
+                        </div>
+                        <div class="actions-right">
+                            <div class="view-toggle">
+                                <button class="toggle-btn active" id="view-grid-btn" title="Grid View">
+                                    <i data-lucide="layout-grid"></i>
+                                </button>
+                                <button class="toggle-btn" id="view-list-btn" title="List View">
+                                    <i data-lucide="list"></i>
+                                </button>
+                            </div>
+                            <button class="btn btn-primary" id="btn-open-add-employee-modal">
+                                <i data-lucide="plus"></i> Add Employee
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Directory Content -->
+                    <div class="employee-view-container">
+                        <!-- Grid View (Default) -->
+                        <div class="employee-grid-view active" id="employee-cards-grid">
+                            <!-- Injected by JavaScript -->
+                        </div>
+
+                        <!-- List View (Hidden by default) -->
+                        <div class="employee-list-view" id="employee-list-table-container">
+                            <table class="data-table" id="employee-table">
+                                <thead>
+                                    <tr>
+                                        <th>Code</th>
+                                        <th>Employee Name</th>
+                                        <th>Department</th>
+                                        <th>Role</th>
+                                        <th>Salary</th>
+                                        <th>Joined Date</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="employee-table-body">
+                                    <!-- Injected by JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 3. LEAVE MANAGER PAGE -->
+                <section class="app-page" id="leave-page">
+                    <!-- Balance Summary Cards -->
+                    <div class="leave-balance-row" id="leave-balance-cards-row">
+                        <div class="balance-card">
+                            <div class="card-inner">
+                                <div>
+                                    <span class="label" id="leave-card-label-1">Paid Leave Available</span>
+                                    <h3 id="leave-balance-paid">18 / 18 Days</h3>
+                                </div>
+                                <div class="card-icon paid" id="leave-card-icon-1"><i data-lucide="umbrella"></i></div>
+                            </div>
+                            <div class="balance-progress-bar"><div class="progress-fill paid" id="leave-progress-1" style="width: 100%;"></div></div>
+                        </div>
+                        <div class="balance-card">
+                            <div class="card-inner">
+                                <div>
+                                    <span class="label" id="leave-card-label-2">Sick Leave Available</span>
+                                    <h3 id="leave-balance-sick">10 / 10 Days</h3>
+                                </div>
+                                <div class="card-icon sick" id="leave-card-icon-2"><i data-lucide="thermometer"></i></div>
+                            </div>
+                            <div class="balance-progress-bar"><div class="progress-fill sick" id="leave-progress-2" style="width: 100%;"></div></div>
+                        </div>
+                        <div class="balance-card">
+                            <div class="card-inner">
+                                <div>
+                                    <span class="label" id="leave-card-label-3">Parental Leave Available</span>
+                                    <h3 id="leave-balance-parental">12 / 12 Days</h3>
+                                </div>
+                                <div class="card-icon parental" id="leave-card-icon-3"><i data-lucide="baby"></i></div>
+                            </div>
+                            <div class="balance-progress-bar"><div class="progress-fill parental" id="leave-progress-3" style="width: 100%;"></div></div>
+                        </div>
+                    </div>
+
+                    <!-- Leave Split Screen -->
+                    <div class="leave-body-layout">
+                        <!-- Apply Form -->
+                        <div class="dashboard-card apply-leave-card">
+                            <div class="card-header">
+                                <h3>Apply For Leave</h3>
+                            </div>
+                            <div class="card-body">
+                                <form id="leave-application-form">
+                                    <div class="form-group">
+                                        <label for="leave-emp-select">Employee Requesting:</label>
+                                        <select id="leave-emp-select" class="form-control" required>
+                                            <option value="">-- Choose Employee --</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="leave-type-select">Leave Type:</label>
+                                        <select id="leave-type-select" class="form-control" required>
+                                            <option value="Paid Leave">Paid Leave (Annual)</option>
+                                            <option value="Sick Leave">Sick Leave</option>
+                                            <option value="Parental Leave">Parental Leave</option>
+                                            <option value="Unpaid Leave">Unpaid Leave</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group col">
+                                            <label for="leave-start-date">Start Date:</label>
+                                            <input type="date" id="leave-start-date" class="form-control" required>
+                                        </div>
+                                        <div class="form-group col">
+                                            <label for="leave-end-date">End Date:</label>
+                                            <input type="date" id="leave-end-date" class="form-control" required>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="leave-reason">Reason/Description:</label>
+                                        <textarea id="leave-reason" class="form-control" rows="4" placeholder="Brief explanation of your leave request..." required></textarea>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary btn-full-width">
+                                        <i data-lucide="send"></i> Submit Request
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- Approval Console -->
+                        <div class="dashboard-card approval-console-card">
+                            <div class="card-header">
+                                <h3>Request History & Approvals</h3>
+                            </div>
+                            <div class="card-body scroll-table-container">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Employee</th>
+                                            <th>Type</th>
+                                            <th>Duration</th>
+                                            <th>Reason</th>
+                                            <th>Status</th>
+                                            <th>Admin Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="leave-history-table-body">
+                                        <!-- Injected by JavaScript -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 4. ATTENDANCE PAGE -->
+                <section class="app-page" id="attendance-page">
+                    <div class="attendance-body-layout">
+                        <!-- Calendar view -->
+                        <div class="dashboard-card calendar-card">
+                            <div class="card-header">
+                                <h3 id="attendance-month-title">Attendance Sheet</h3>
+                                <div class="calendar-legends">
+                                    <span class="legend present"><i class="dot"></i> Present</span>
+                                    <span class="legend late"><i class="dot"></i> Late</span>
+                                    <span class="legend absent"><i class="dot"></i> Absent</span>
+                                    <span class="legend leave"><i class="dot"></i> Leave</span>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="employee-select-card-wrapper">
+                                    <label for="attendance-view-emp-select">Select Employee to View Attendance Record:</label>
+                                    <select id="attendance-view-emp-select" class="form-select">
+                                        <!-- Filled by js -->
+                                    </select>
+                                </div>
+                                <div class="calendar-grid-header">
+                                    <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
+                                </div>
+                                <div class="calendar-grid" id="calendar-days-grid">
+                                    <!-- Days will be filled by JS -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Logs view -->
+                        <div class="dashboard-card logs-card">
+                            <div class="card-header">
+                                <h3>Organization Daily Log</h3>
+                                <span class="header-action text-muted" id="current-log-date">Today</span>
+                            </div>
+                            <div class="card-body scroll-table-container">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Employee</th>
+                                            <th>Code</th>
+                                            <th>Date</th>
+                                            <th>Clock In</th>
+                                            <th>Clock Out</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="attendance-logs-table-body">
+                                        <!-- Injected by JavaScript -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 5. PAYROLL PORTAL PAGE -->
+                <section class="app-page" id="payroll-page">
+                    <div class="payroll-body-layout">
+                        <!-- Selection panel -->
+                        <div class="dashboard-card selection-card">
+                            <div class="card-header">
+                                <h3>Generate Payroll Slip</h3>
+                            </div>
+                            <div class="card-body">
+                                <form id="payroll-generation-form">
+                                    <div class="form-group">
+                                        <label for="payroll-emp-select">Select Employee:</label>
+                                        <select id="payroll-emp-select" class="form-control" required>
+                                            <option value="">-- Select Employee --</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group col">
+                                            <label for="payroll-month">Month:</label>
+                                            <select id="payroll-month" class="form-control">
+                                                <option value="current">Current Month</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary btn-full-width">
+                                        <i data-lucide="file-text"></i> Generate Payslip
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- Payslip Viewer -->
+                        <div class="dashboard-card payslip-card" id="payslip-result-card">
+                            <div class="card-header payslip-header-btn">
+                                <h3>Payslip Summary</h3>
+                                <div style="display:flex; gap:8px;">
+                                    <button class="btn btn-secondary btn-small hidden" id="btn-payroll-back">
+                                        <i data-lucide="arrow-left"></i> Back to Selector
+                                    </button>
+                                    <button class="btn btn-secondary btn-small" onclick="window.print()">
+                                        <i data-lucide="printer"></i> Print Slip
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="payslip-preview-empty" id="payslip-preview-empty">
+                                    <i data-lucide="receipt"></i>
+                                    <p>Select an employee and click "Generate Payslip" to view structural breakdown.</p>
+                                </div>
+                                
+                                <div class="payslip-view-content hidden" id="payslip-content">
+                                    <!-- Injected dynamic content -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 6. SETTINGS PAGE -->
+                <section class="app-page" id="settings-page">
+                    <div class="dashboard-card max-width-card">
+                        <div class="card-header">
+                            <h3>Settings & Configurations</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="settings-section">
+                                <h4>General Configurations</h4>
+                                <input type="hidden" id="settings-org-name" value="Smart HRMS">
+                                <div class="form-group">
+                                    <label for="settings-timezone">App Timezone</label>
+                                    <select id="settings-timezone" class="form-control">
+                                        <option value="UTC">UTC (GMT+0)</option>
+                                        <option value="IST" selected>India Standard Time (IST) GMT+5:30</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="divider"></div>
+
+                            <div class="settings-section">
+                                <h4>Attendance Settings</h4>
+                                <div class="form-row">
+                                    <div class="form-group col">
+                                        <label for="settings-work-start">Shift Start Time</label>
+                                        <input type="time" id="settings-work-start" class="form-control" value="09:00">
+                                    </div>
+                                    <div class="form-group col">
+                                        <label for="settings-late-grace">Grace Period (minutes)</label>
+                                        <input type="number" id="settings-late-grace" class="form-control" value="5">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="divider"></div>
+
+                            <div class="settings-section">
+                                <h4>Appearance Preference & Theme Palettes</h4>
+                                <div class="theme-picker-row">
+                                    <div class="theme-card active" data-theme-val="dark" onclick="selectTheme('dark')">
+                                        <div class="theme-preview dark"></div>
+                                        <span>HROne Sapphire</span>
+                                    </div>
+                                    <div class="theme-card" data-theme-val="light" onclick="selectTheme('light')">
+                                        <div class="theme-preview light"></div>
+                                        <span>Alpine Light</span>
+                                    </div>
+                                    <div class="theme-card" data-theme-val="emerald" onclick="selectTheme('emerald')">
+                                        <div class="theme-preview emerald"></div>
+                                        <span>Emerald Green</span>
+                                    </div>
+                                    <div class="theme-card" data-theme-val="purple" onclick="selectTheme('purple')">
+                                        <div class="theme-preview purple"></div>
+                                        <span>Royal Violet</span>
+                                    </div>
+                                    <div class="theme-card" data-theme-val="coral" onclick="selectTheme('coral')">
+                                        <div class="theme-preview coral"></div>
+                                        <span>Tech Coral</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="divider"></div>
+
+                            <div class="settings-section">
+                                <h4>Account Security</h4>
+                                <div style="margin-top: 10px;">
+                                    <button class="btn btn-secondary" onclick="openChangePasswordModal()">
+                                        <i data-lucide="key" style="width:16px; height:16px; margin-right:6px; vertical-align:middle;"></i> Change Portal Password
+                                    </button>
+                                </div>
+                            </div>
+
+                            <button class="btn btn-primary" id="save-settings-btn" style="margin-top: 20px;">
+                                <i data-lucide="save"></i> Save Configurations
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 7. CAREERS MANAGER PAGE -->
+                <section class="app-page" id="careers-page">
+                    <div class="page-actions-bar">
+                        <div class="filters-left">
+                            <h3 style="margin: 0; font-family: var(--font-heading);">Recruitment & Career Openings</h3>
+                        </div>
+                        <div class="actions-right">
+                            <button class="btn btn-primary" id="btn-open-add-career-modal">
+                                <i data-lucide="plus"></i> Add Job Opening
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="dashboard-card max-width-card" style="margin-top: 24px;">
+                        <div class="card-body scroll-table-container">
+                            <table class="data-table" id="careers-table">
+                                <thead>
+                                    <tr>
+                                        <th>Job Title</th>
+                                        <th>Department</th>
+                                        <th>Experience Required</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="careers-table-body">
+                                    <!-- Injected dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- MODAL: ADD / EDIT EMPLOYEE -->
+    <div class="modal-overlay" id="employee-modal">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h3 id="employee-modal-title">Add New Employee</h3>
+                <button class="close-btn" id="employee-modal-close"><i data-lucide="x"></i></button>
+            </div>
+            <div class="modal-body">
+                <form id="employee-form">
+                    <input type="hidden" id="form-emp-id-db">
+                    <div class="form-row">
+                        <div class="form-group col">
+                            <label for="form-emp-code">Employee ID/Code:</label>
+                            <input type="text" id="form-emp-code" class="form-control" placeholder="e.g. EMP011" required>
+                        </div>
+                        <div class="form-group col">
+                            <label for="form-emp-status">Initial Status:</label>
+                            <select id="form-emp-status" class="form-control">
+                                <option value="Active">Active</option>
+                                <option value="Remote">Remote</option>
+                                <option value="On Leave">On Leave</option>
+                                <option value="Inactive">Inactive</option>
+                                <option value="Remove Employee">Remove Employee</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col">
+                            <label for="form-first-name">First Name:</label>
+                            <input type="text" id="form-first-name" class="form-control" required>
+                        </div>
+                        <div class="form-group col">
+                            <label for="form-last-name">Last Name:</label>
+                            <input type="text" id="form-last-name" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col">
+                            <label for="form-email">Work Email:</label>
+                            <input type="email" id="form-email" class="form-control" required>
+                        </div>
+                        <div class="form-group col">
+                            <label for="form-phone">Phone Number:</label>
+                            <input type="text" id="form-phone" class="form-control" placeholder="+91 XXXXX XXXXX">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col">
+                            <label for="form-dept-select">Department:</label>
+                            <select id="form-dept-select" class="form-control" required>
+                                <option value="">-- Choose Department --</option>
+                                <!-- Injected dynamically -->
+                            </select>
+                        </div>
+                        <div class="form-group col">
+                            <label for="form-role">Job Title/Role:</label>
+                            <input type="text" id="form-role" class="form-control" placeholder="e.g. Frontend Engineer" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col">
+                            <label for="form-salary">Monthly Basic Salary (₹):</label>
+                            <input type="number" id="form-salary" class="form-control" min="1000" placeholder="e.g. 45000" required>
+                        </div>
+                        <div class="form-group col">
+                            <label for="form-joined">Date of Joining:</label>
+                            <input type="date" id="form-joined" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col">
+                            <label for="form-emp-shift">Assigned Work Shift:</label>
+                            <select id="form-emp-shift" class="form-control" required>
+                                <option value="">-- Choose Shift --</option>
+                                <!-- Injected dynamically -->
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="form-bio">Short Employee Bio:</label>
+                        <textarea id="form-bio" class="form-control" rows="3" placeholder="Briefly describe background or skills..."></textarea>
+                    </div>
+                    <div class="form-group" style="margin-top: 12px;">
+                        <label for="form-emp-password">Portal Access Password (defaults to Employee ID):</label>
+                        <input type="text" id="form-emp-password" class="form-control" placeholder="Leave blank to default to Employee ID / Keep current">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" id="employee-modal-cancel">Cancel</button>
+                        <button type="submit" class="btn btn-primary" id="employee-form-submit">Save Employee</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: EMPLOYEE PROFILE DETAILS -->
+    <div class="modal-overlay" id="profile-modal">
+        <div class="modal-container max-width-modal">
+            <div class="modal-header">
+                <h3>Employee Profile Details</h3>
+                <button class="close-btn" id="profile-modal-close"><i data-lucide="x"></i></button>
+            </div>
+            <div class="modal-body" id="profile-modal-body">
+                <!-- Injected profile view -->
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: ADD / EDIT CAREER -->
+    <div class="modal-overlay" id="career-modal">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h3 id="career-modal-title">Add Job Opening</h3>
+                <button class="close-btn" id="career-modal-close"><i data-lucide="x"></i></button>
+            </div>
+            <div class="modal-body">
+                <form id="career-form">
+                    <input type="hidden" id="form-career-id-db">
+                    <div class="form-group">
+                        <label for="form-career-title">Job Title:</label>
+                        <input type="text" id="form-career-title" class="form-control" placeholder="e.g. Senior Django Developer" required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col">
+                            <label for="form-career-dept">Department:</label>
+                            <select id="form-career-dept" class="form-control" required>
+                                <option value="">-- Choose Department --</option>
+                            </select>
+                        </div>
+                        <div class="form-group col">
+                            <label for="form-career-exp">Experience Required:</label>
+                            <input type="text" id="form-career-exp" class="form-control" placeholder="e.g. 3-5 Years" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="form-career-status">Status:</label>
+                        <select id="form-career-status" class="form-control">
+                            <option value="Active">Active</option>
+                            <option value="Paused">Paused</option>
+                            <option value="Closed">Closed</option>
+                        </select>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" id="career-modal-cancel">Cancel</button>
+                        <button type="submit" class="btn btn-primary" id="career-form-submit">Save Position</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: CHANGE PASSWORD -->
+    <div class="modal-overlay" id="change-password-modal">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h3>Change Access Password</h3>
+                <button class="close-btn" id="change-password-modal-close"><i data-lucide="x"></i></button>
+            </div>
+            <div class="modal-body">
+                <form id="change-password-form">
+                    <div class="form-group">
+                        <label for="change-pwd-old">Current Password:</label>
+                        <input type="password" id="change-pwd-old" class="form-control" placeholder="Enter current password" required>
+                    </div>
+                    <div class="form-group" style="margin-top:12px;">
+                        <label for="change-pwd-new">New Password:</label>
+                        <input type="password" id="change-pwd-new" class="form-control" placeholder="Enter new password (min. 4 characters)" required>
+                    </div>
+                    <div class="form-group" style="margin-top:12px;">
+                        <label for="change-pwd-confirm">Confirm New Password:</label>
+                        <input type="password" id="change-pwd-confirm" class="form-control" placeholder="Re-enter new password" required>
+                    </div>
+                    <div class="modal-footer" style="margin-top:20px;">
+                        <button type="button" class="btn btn-secondary" id="change-password-modal-cancel">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Update Password</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Load Client Application logic -->
+    <script src="{% static 'js/app.js' %}"></script>
+</body>
+</html>

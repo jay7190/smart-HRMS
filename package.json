@@ -1,0 +1,18 @@
+{
+  "name": "smart-hrms",
+  "version": "1.0.0",
+  "description": "Full-stack Intelligent HRMS portal built with Django & MySQL",
+  "scripts": {
+    "dev": "python manage.py runserver",
+    "migrate": "python manage.py migrate",
+    "seed": "python manage.py seed_db"
+  },
+  "keywords": [
+    "hrms",
+    "django",
+    "mysql",
+    "python"
+  ],
+  "author": "",
+  "license": "ISC"
+}
