@@ -79,31 +79,10 @@ async function initApp() {
 // Check session
 function checkSession() {
     const userStr = localStorage.getItem('currentUser');
-    const landingWrapper = document.getElementById('landing-page-wrapper');
-    const appContainer = document.querySelector('.app-container');
-    const btnLandingAccess = document.getElementById('btn-landing-access-portal');
-
-    // Always show the public SaaS product website by default on site visit!
-    if (landingWrapper) landingWrapper.style.display = 'block';
-    if (appContainer) appContainer.style.display = 'none';
-    document.getElementById('login-overlay-page').classList.remove('active');
-
     if (userStr) {
         appState.currentUser = JSON.parse(userStr);
-        applyUserRoleUI();
-        if (btnLandingAccess) {
-            btnLandingAccess.innerHTML = `<i data-lucide="layout-dashboard"></i> Go to HR Portal →`;
-        }
-    }
-}
-
-function enterPortal() {
-    if (appState.currentUser) {
-        const landingWrapper = document.getElementById('landing-page-wrapper');
-        const appContainer = document.querySelector('.app-container');
-        if (landingWrapper) landingWrapper.style.display = 'none';
-        if (appContainer) appContainer.style.display = 'flex';
         document.getElementById('login-overlay-page').classList.remove('active');
+        applyUserRoleUI();
         if (appState.currentUser.role === 'admin') {
             openPage('dashboard');
         } else {
@@ -114,14 +93,6 @@ function enterPortal() {
     }
 }
 
-function showPublicWebsite() {
-    const landingWrapper = document.getElementById('landing-page-wrapper');
-    const appContainer = document.querySelector('.app-container');
-    if (landingWrapper) landingWrapper.style.display = 'block';
-    if (appContainer) appContainer.style.display = 'none';
-    document.getElementById('login-overlay-page').classList.remove('active');
-}
-
 // 1. EVENT LISTENERS SETUP
 function setupEventListeners() {
     // Login form submit
@@ -129,135 +100,6 @@ function setupEventListeners() {
     
     // Logout button click
     document.getElementById('btn-logout').addEventListener('click', handleLogout);
-
-    // Navigation between Public Website and HR Portal
-    const btnLandingAccess = document.getElementById('btn-landing-access-portal');
-    if (btnLandingAccess) btnLandingAccess.addEventListener('click', enterPortal);
-
-    const btnNavWebsite = document.getElementById('nav-back-to-website');
-    if (btnNavWebsite) btnNavWebsite.addEventListener('click', showPublicWebsite);
-
-    const btnHeaderWebsite = document.getElementById('btn-header-view-website');
-    if (btnHeaderWebsite) btnHeaderWebsite.addEventListener('click', showPublicWebsite);
-
-    const btnBackLanding = document.getElementById('btn-back-to-landing');
-    if (btnBackLanding) btnBackLanding.addEventListener('click', showPublicWebsite);
-
-    // SaaS Lead Modal triggers
-    const openLeadModal = (title = 'Start Your 14-Day Free Trial', subtitle = 'No credit card required. Get instant access to Smart HRMS.') => {
-        const titleEl = document.getElementById('lead-modal-title');
-        const subtitleEl = document.getElementById('lead-modal-subtitle');
-        if (titleEl) titleEl.innerText = title;
-        if (subtitleEl) subtitleEl.innerText = subtitle;
-        const modal = document.getElementById('lead-modal-overlay');
-        if (modal) modal.classList.add('active');
-    };
-
-    const closeLeadModal = () => {
-        const modal = document.getElementById('lead-modal-overlay');
-        if (modal) modal.classList.remove('active');
-    };
-
-    const btnOpenDemo = document.getElementById('btn-open-demo-modal');
-    if (btnOpenDemo) btnOpenDemo.addEventListener('click', () => openLeadModal('Book a Live Personal Demo', 'Schedule a 1-on-1 walkthrough with an HR Specialist.'));
-
-    const btnHeroTrial = document.getElementById('btn-hero-free-trial');
-    if (btnHeroTrial) btnHeroTrial.addEventListener('click', () => openLeadModal('Start Your 14-Day Free Trial', 'No credit card required. Get instant access to Smart HRMS.'));
-
-    const btnHeroSchedule = document.getElementById('btn-hero-schedule-demo');
-    if (btnHeroSchedule) btnHeroSchedule.addEventListener('click', () => openLeadModal('Book a Personal Demo', 'Schedule a 1-on-1 walkthrough with an HR Specialist.'));
-
-    const btnCtaTrial = document.getElementById('btn-cta-open-trial');
-    if (btnCtaTrial) btnCtaTrial.addEventListener('click', () => openLeadModal('Start Your 14-Day Free Trial', 'No credit card required. Get instant access to Smart HRMS.'));
-
-    document.querySelectorAll('.btn-select-plan').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const plan = btn.getAttribute('data-plan');
-            openLeadModal(`Get Started with ${plan}`, `Start your trial or contact sales for the ${plan} plan.`);
-        });
-    });
-
-    const leadClose = document.getElementById('lead-modal-close');
-    if (leadClose) leadClose.addEventListener('click', closeLeadModal);
-
-    const leadForm = document.getElementById('lead-capture-form');
-    if (leadForm) {
-        leadForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const name = document.getElementById('lead-name').value.trim();
-            const email = document.getElementById('lead-email').value.trim();
-            const company = document.getElementById('lead-company').value.trim();
-            const size = document.getElementById('lead-size').value;
-
-            try {
-                showToast('Submitting inquiry and sending email alert...', 'info');
-                const response = await fetch('/api/lead-inquiry/', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ name, email, company, size })
-                });
-                const resData = await response.json();
-                closeLeadModal();
-                leadForm.reset();
-                if (response.ok) {
-                    showToast(`Thank you ${name}! Your inquiry was sent to jayfaldu275@gmail.com. We will email you shortly!`, 'success');
-                } else {
-                    showToast(resData.message || 'Inquiry submitted successfully.', 'info');
-                }
-            } catch (err) {
-                console.error(err);
-                closeLeadModal();
-                leadForm.reset();
-                showToast(`Thank you ${name}! Your demo request has been received.`, 'success');
-            }
-        });
-    }
-
-    // Billing Cycle Toggle (Monthly / Annual)
-    const billingToggle = document.getElementById('billing-cycle-toggle');
-    if (billingToggle) {
-        billingToggle.addEventListener('change', (e) => {
-            const isAnnual = e.target.checked;
-            const labelMonthly = document.getElementById('label-monthly');
-            const labelAnnual = document.getElementById('label-annual');
-
-            if (isAnnual) {
-                if (labelMonthly) labelMonthly.classList.remove('active');
-                if (labelAnnual) labelAnnual.classList.add('active');
-            } else {
-                if (labelAnnual) labelAnnual.classList.remove('active');
-                if (labelMonthly) labelMonthly.classList.add('active');
-            }
-
-            document.querySelectorAll('.price-val').forEach(el => {
-                const val = isAnnual ? el.getAttribute('data-annual') : el.getAttribute('data-monthly');
-                el.innerText = val;
-            });
-        });
-    }
-
-    // ROI Calculator Slider
-    const roiSlider = document.getElementById('company-size-slider');
-    if (roiSlider) {
-        roiSlider.addEventListener('input', (e) => {
-            const teamSize = parseInt(e.target.value, 10);
-            document.getElementById('slider-team-size').innerText = teamSize;
-
-            const hoursSaved = Math.round(teamSize * 0.8);
-            const moneySaved = teamSize * 32;
-
-            document.getElementById('roi-hours-saved').innerText = `${hoursSaved} Hours`;
-            document.getElementById('roi-money-saved').innerText = `$${moneySaved.toLocaleString()}`;
-        });
-    }
-
-    // FAQ Accordion
-    document.querySelectorAll('.faq-question').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const item = btn.parentElement;
-            item.classList.toggle('active');
-        });
-    });
 
     // Routing Navigation
     document.querySelectorAll('.nav-item').forEach(item => {
@@ -398,8 +240,14 @@ async function handleLogin(e) {
             localStorage.setItem('currentUser', JSON.stringify(data));
             appState.currentUser = data;
             document.getElementById('login-form').reset();
+            document.getElementById('login-overlay-page').classList.remove('active');
             showToast(`Logged in successfully as ${data.name}!`, 'success');
-            enterPortal();
+            applyUserRoleUI();
+            if (data.role === 'admin') {
+                openPage('dashboard');
+            } else {
+                openPage('profile');
+            }
         } else {
             showToast(data.message || 'Login failed. Please verify credentials.', 'danger');
         }
@@ -413,11 +261,7 @@ function handleLogout() {
     localStorage.removeItem('currentUser');
     appState.currentUser = null;
     appState.activeClockUser = null;
-    const btnLandingAccess = document.getElementById('btn-landing-access-portal');
-    if (btnLandingAccess) {
-        btnLandingAccess.innerHTML = `<i data-lucide="log-in"></i> Sign In to Portal`;
-    }
-    showPublicWebsite();
+    document.getElementById('login-overlay-page').classList.add('active');
     resetClockWidget();
     showToast('Logged out successfully.', 'info');
 }
