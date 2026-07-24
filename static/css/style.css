@@ -2799,9 +2799,72 @@ select option {
     font-weight: 700;
 }
 
-.footer-content p {
-    font-size: 0.85rem;
+/* TOAST NOTIFICATION SYSTEM */
+#toast-container {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 99999;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-width: 420px;
+    pointer-events: none;
+}
+
+.toast {
+    pointer-events: auto;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 20px;
+    background: rgba(18, 25, 41, 0.95);
+    border: 1px solid var(--border-color);
+    border-radius: 14px;
+    color: var(--text-color);
+    font-size: 0.92rem;
+    font-weight: 500;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(16px);
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.toast.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.toast-success {
+    border-color: rgba(16, 185, 129, 0.4);
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(18, 25, 41, 0.95));
+}
+
+.toast-success i {
+    color: #10b981;
+}
+
+.toast-danger, .toast-error {
+    border-color: rgba(239, 68, 68, 0.4);
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(18, 25, 41, 0.95));
+}
+
+.toast-danger i, .toast-error i {
+    color: #ef4444;
+}
+
+.toast-info i {
+    color: var(--primary-color);
+}
+
+.toast-close {
+    background: none;
+    border: none;
     color: var(--text-muted);
+    font-size: 1.2rem;
+    cursor: pointer;
+    margin-left: auto;
 }
 
 /* 21. SAAS COMMERCIAL SALES PLATFORM STYLES */

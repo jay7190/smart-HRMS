@@ -17,6 +17,41 @@ document.addEventListener('DOMContentLoaded', () => {
     setupEventListeners();
 });
 
+// Toast Notification Helper
+function showToast(message, type = 'info') {
+    let container = document.getElementById('toast-container');
+    if (!container) {
+        container = document.createElement('div');
+        container.id = 'toast-container';
+        document.body.appendChild(container);
+    }
+    
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${type}`;
+    
+    let iconName = 'info';
+    if (type === 'success') iconName = 'check-circle';
+    if (type === 'danger' || type === 'error') iconName = 'alert-triangle';
+    
+    toast.innerHTML = `
+        <i data-lucide="${iconName}"></i>
+        <span>${message}</span>
+        <button class="toast-close" onclick="this.parentElement.remove()">&times;</button>
+    `;
+    
+    container.appendChild(toast);
+    if (window.lucide) lucide.createIcons();
+    
+    setTimeout(() => {
+        toast.classList.add('show');
+    }, 10);
+    
+    setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 300);
+    }, 4500);
+}
+
 // Initialize Application
 async function initApp() {
     // Load theme
