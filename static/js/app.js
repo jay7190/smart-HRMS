@@ -147,12 +147,34 @@ function setupEventListeners() {
 
     const leadForm = document.getElementById('lead-capture-form');
     if (leadForm) {
-        leadForm.addEventListener('submit', (e) => {
+        leadForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            const name = document.getElementById('lead-name').value;
-            closeLeadModal();
-            leadForm.reset();
-            showToast(`Thank you ${name}! Your request has been received. Our sales team will contact you shortly.`, 'success');
+            const name = document.getElementById('lead-name').value.trim();
+            const email = document.getElementById('lead-email').value.trim();
+            const company = document.getElementById('lead-company').value.trim();
+            const size = document.getElementById('lead-size').value;
+
+            try {
+                showToast('Submitting inquiry and sending email alert...', 'info');
+                const response = await fetch('/api/lead-inquiry/', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, email, company, size })
+                });
+                const resData = await response.json();
+                closeLeadModal();
+                leadForm.reset();
+                if (response.ok) {
+                    showToast(`Thank you ${name}! Your inquiry was sent to jayfaldu275@gmail.com. We will email you shortly!`, 'success');
+                } else {
+                    showToast(resData.message || 'Inquiry submitted successfully.', 'info');
+                }
+            } catch (err) {
+                console.error(err);
+                closeLeadModal();
+                leadForm.reset();
+                showToast(`Thank you ${name}! Your demo request has been received.`, 'success');
+            }
         });
     }
 

@@ -24,4 +24,5 @@ urlpatterns = [
     path('api/careers/', views.careers_list_api, name='api_careers'),
     path('api/careers/<int:career_id>/', views.career_detail_api, name='api_career_detail'),
     path('api/shifts/', views.shifts_list_api, name='api_shifts'),
+    path('api/lead-inquiry/', views.lead_inquiry_api, name='api_lead_inquiry'),
 ]

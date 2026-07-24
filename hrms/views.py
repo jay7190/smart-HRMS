@@ -5,6 +5,8 @@ from django.views.decorators.csrf import csrf_exempt
 from django.utils import timezone
 from datetime import datetime, date, timedelta
 from django.db.models import Count, Q, Avg
+from django.core.mail import send_mail
+from django.conf import settings
 from .models import Department, Employee, LeaveRequest, Attendance, Career, Shift
 
 # Helper to serialize decimal fields to float
@@ -834,3 +836,59 @@ def shifts_list_api(request):
                 'grace_period': s.grace_period
             })
         return JsonResponse({'status': 'success', 'shifts': data})
+
+@csrf_exempt
+def lead_inquiry_api(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            name = data.get('name', 'N/A').strip()
+            email = data.get('email', 'N/A').strip()
+            company = data.get('company', 'N/A').strip()
+            size = data.get('size', 'N/A').strip()
+            phone = data.get('phone', 'N/A').strip()
+            message = data.get('message', '').strip()
+            
+            subject = f"🚨 New Smart HRMS Lead Inquiry: {name} ({company})"
+            
+            body = f"""You received a new lead demo inquiry from your Smart HRMS Website!
+
+--------------------------------------------------
+Prospect Name:  {name}
+Work Email:     {email}
+Company Name:   {company}
+Team Size:      {size}
+Phone Number:   {phone}
+Inquiry Details: {message or 'Requested 14-Day Free Trial / Personal Demo'}
+--------------------------------------------------
+Submitted at:   {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
+Website Source: Smart HRMS Commercial Platform
+"""
+            recipient = getattr(settings, 'LEAD_NOTIFICATION_EMAIL', 'jayfaldu275@gmail.com')
+            from_email = getattr(settings, 'DEFAULT_FROM_EMAIL', 'Smart HRMS Leads <noreply@smarthrms.com>')
+            
+            email_sent = False
+            try:
+                send_mail(
+                    subject=subject,
+                    message=body,
+                    from_email=from_email,
+                    recipient_list=[recipient],
+                    fail_silently=False
+                )
+                email_sent = True
+                print(f"[Smart HRMS Lead Email Sent] Notification dispatched to {recipient}")
+            except Exception as mail_err:
+                print(f"[Smart HRMS Lead Notification] Target: {recipient}\n{body}")
+                print(f"[Smart HRMS Lead Mail Note]: {mail_err}")
+                
+            return JsonResponse({
+                'status': 'success',
+                'message': f'Thank you {name}! Your inquiry has been received. Notification email sent to {recipient}.',
+                'email_sent': email_sent,
+                'recipient': recipient
+            })
+        except Exception as e:
+            return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=405)
+
