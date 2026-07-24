@@ -1543,7 +1543,7 @@ async function renderAttendanceCalendar(empId) {
         if (!emp) return;
         
         // Filter records for this employee
-        const empRecords = records.filter(r => r.employee_code === emp.employee_id);
+        const empRecords = records.filter(r => r.employee_code === emp.employee_id || r.employee_id == emp.id);
         
         const calendarGrid = document.getElementById('calendar-days-grid');
         calendarGrid.innerHTML = '';
