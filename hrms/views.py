@@ -51,13 +51,13 @@ def login_api(request):
             email = data.get('email', '').strip().lower()
             password = data.get('password', '').strip()
             
-            if email == 'admin@smarthr.com' and password == 'admin':
+            if email == 'admin@hrms.com' and password == 'admin':
                 return JsonResponse({
                     'status': 'success',
                     'role': 'admin',
                     'id': 0,
                     'name': 'HR Admin',
-                    'email': 'admin@smarthr.com'
+                    'email': 'admin@hrms.com'
                 })
             
             # Check employee

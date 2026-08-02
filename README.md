@@ -58,7 +58,7 @@
 
 | Role | Email | Password |
 | :--- | :--- | :--- |
-| **HR Administrator** | `admin@smarthr.com` | `admin` |
+| **HR Administrator** | `admin@hrms.com` | `admin` |
 | **Employee** | `tony@starkindustries.com` | `EMP001` |
 
 ---

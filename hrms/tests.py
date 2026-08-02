@@ -40,7 +40,7 @@ class HRMSModelAndAPITests(TestCase):
     def test_login_api_admin(self):
         response = self.client.post(
             '/api/login/',
-            data=json.dumps({'email': 'admin@smarthr.com', 'password': 'admin'}),
+            data=json.dumps({'email': 'admin@hrms.com', 'password': 'admin'}),
             content_type='application/json'
         )
         self.assertEqual(response.status_code, 200)
