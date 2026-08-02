@@ -3,6 +3,13 @@ from pathlib import Path
 import socket
 import sys
 
+# Install pymysql as MySQLdb to support Django's MySQL engine
+try:
+    import pymysql
+    pymysql.install_as_MySQLdb()
+except ImportError:
+    pass
+
 # Monkeypatch to support older MariaDB/MySQL in XAMPP (e.g., MariaDB 10.4.x)
 from django.db.backends.base.base import BaseDatabaseWrapper
 BaseDatabaseWrapper.check_database_version_supported = lambda self: None
@@ -15,9 +22,9 @@ DatabaseFeatures.can_return_rows_from_bulk_insert = False
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Security settings
-SECRET_KEY = 'django-insecure-smart-hrms-secret-key-for-local-development'
-DEBUG = True
-ALLOWED_HOSTS = ['*']
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-smart-hrms-secret-key-for-local-development')
+DEBUG = os.environ.get('DEBUG', 'True').lower() == 'true'
+ALLOWED_HOSTS = [h.strip() for h in os.environ.get('ALLOWED_HOSTS', '*').split(',') if h.strip()]
 
 # Application definition
 INSTALLED_APPS = [
@@ -101,26 +108,38 @@ def setup_mysql_database(host='127.0.0.1', port=3306):
         return False
 
 # Initialize database
-USE_MYSQL = setup_mysql_database()
+try:
+    import dj_database_url
+    HAS_DJ_DATABASE_URL = True
+except ImportError:
+    HAS_DJ_DATABASE_URL = False
 
-if USE_MYSQL:
+DATABASE_URL = os.environ.get('DATABASE_URL')
+if DATABASE_URL and HAS_DJ_DATABASE_URL:
     DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.mysql',
-            'NAME': 'smart_hrms',
-            'USER': 'root',
-            'PASSWORD': '',
-            'HOST': '127.0.0.1',
-            'PORT': '3306',
-        }
+        'default': dj_database_url.config(default=DATABASE_URL, conn_max_age=600)
     }
 else:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
+    USE_MYSQL = setup_mysql_database()
+
+    if USE_MYSQL:
+        DATABASES = {
+            'default': {
+                'ENGINE': 'django.db.backends.mysql',
+                'NAME': 'smart_hrms',
+                'USER': 'root',
+                'PASSWORD': '',
+                'HOST': '127.0.0.1',
+                'PORT': '3306',
+            }
         }
-    }
+    else:
+        DATABASES = {
+            'default': {
+                'ENGINE': 'django.db.backends.sqlite3',
+                'NAME': BASE_DIR / 'db.sqlite3',
+            }
+        }
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [

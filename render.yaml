@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: smart-hrms
+    runtime: python
+    buildCommand: "./build.sh"
+    startCommand: "gunicorn hrms_project.wsgi:application"
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.10.12
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DEBUG
+        value: "False"
+      - key: ALLOWED_HOSTS
+        value: "*"
+      # To use Approach B (Neon PostgreSQL), uncomment the database configuration below
+      # or simply add DATABASE_URL as an environment variable in your Render dashboard:
+      # - key: DATABASE_URL
+      #   value: "postgresql://user:password@host/dbname"

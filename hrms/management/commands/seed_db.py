@@ -6,7 +6,19 @@ from hrms.models import Department, Employee, LeaveRequest, Attendance, Career, 
 class Command(BaseCommand):
     help = 'Seeds the HRMS database with departments, shifts, employees, leaves, careers, and attendance logs.'
 
+    def add_arguments(self, parser):
+        parser.add_argument(
+            '--force',
+            action='store_true',
+            help='Force seeding even if data already exists',
+        )
+
     def handle(self, *args, **options):
+        force = options.get('force', False)
+        if Employee.objects.exists() and not force:
+            self.stdout.write(self.style.WARNING('Database already has employee records. Skipping seeding. Use --force to seed anyway.'))
+            return
+
         self.stdout.write('Resetting database tables...')
         # Clear existing data
         Attendance.objects.all().delete()
